@@ -7,7 +7,15 @@
             "content": "Here’s a beginner guide to React hooks...",
             "author": "Jane Doe",
             "publishedAt": "2025-06-25T10:00:00Z",
-            "updatedAt": "2025-06-26T10:00:00Z"
+            "updatedAt": "2025-06-26T10:00:00Z",
+            "comments": [
+                {
+                    "firstName": "Sally",
+                    "lastName": "NoNothing",
+                    "commentedAt": "2025-06-26T12:00:00Z",
+                    "comment": "Wow!"
+                }
+            ]
         },
         {
             "id": 2,
@@ -16,7 +24,15 @@
             "content": "Set up this whole next.js page routing app on my own!",
             "author": "Amanda Miller",
             "publishedAt": "2025-06-24T10:00:00Z",
-            "updatedAt": "2025-06-26T09:00:00Z"
+            "updatedAt": "2025-06-26T09:00:00Z",
+            "comments": [
+                {
+                    "firstName": "Sally",
+                    "lastName": "NoNothing",
+                    "commentedAt": "2025-06-26T12:00:00Z",
+                    "comment": "Slay!"
+                }
+            ]
         }
     ]
 }

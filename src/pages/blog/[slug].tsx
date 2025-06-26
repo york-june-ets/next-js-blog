@@ -1,39 +1,63 @@
-import { useRouter } from 'next/router';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { BlogProps } from '@/Interfaces/blogs';
 
-export default function BlogPost() {
-    const [post, setPost] = useState<BlogProps | null>(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
-    const { slug } = router.query;
+export default function BlogPost({ blog }: { blog: any }) {
+    const [comments, setComments] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!slug || typeof slug !== 'string') return;
-
-        const fetchPost = async () => {
-            try {
-                const res = await fetch(`http://localhost:5000/blogs?slug=${slug}`);
-                const data = await res.json();
-                setPost(data[0] || null);
-            } catch (err) {
-                console.error('Failed to fetch post:', err);
-            } finally {
-                setLoading(false);
-            }
+        const fetchComments = async () => {
+            const res = await fetch(`http://localhost:5000/blogs/${blog.id}`);
+            const data = await res.json();
+            console.log({ data })
+            setComments(data.comments);
         };
 
-        fetchPost();
-    }, [slug]);
-
-    if (loading) return <p>Loading...</p>;
-    if (!post) return <h1>404 - Post not found</h1>;
+        fetchComments();
+    }, [blog.id]);
 
     return (
         <div>
-            <h1>{post.title}</h1>
-            <p>{post.content}</p>
-            <p>By: {post.author}</p>
+            <h1>{blog.title}</h1>
+            <p><i>By {blog.author}</i></p>
+            <p>{blog.content}</p>
+
+            <hr />
+            <h2>Comments</h2>
+            {comments.length === 0 ? <p>No comments yet.</p> : (
+                <div>
+                    {comments.map((c) => (
+                        <div>
+                            <p key={c.id}><b>{c.firstName} {c.lastName}</b>: {c.comment}</p>
+                            <span>Commented on: {new Date(c.commentedAt).toLocaleDateString()}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    const res = await fetch('http://localhost:5000/blogs');
+    const blogs = await res.json();
+    const paths = blogs.map((blog: any) => ({
+        params: { slug: blog.slug },
+    }));
+
+    return { paths, fallback: 'blocking' };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+    const slug = params?.slug;
+    const res = await fetch(`http://localhost:5000/blogs?slug=${slug}`);
+    const blogData = await res.json();
+
+    if (!blogData[0]) return { notFound: true };
+
+    return {
+        props: {
+            blog: blogData[0],
+        },
+        revalidate: 10, // ISR every 10 seconds
+    };
+};
