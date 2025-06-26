@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
+import { BlogProps } from '@/Interfaces/blogs';
 
-export default function BlogIndex({ blogs }: { blogs: any[] }) {
+export default function BlogIndex({ blogs }: { blogs: BlogProps[] }) {
     return (
         <div>
             <h1>Blog Posts</h1>

@@ -1,8 +1,9 @@
+import { BlogProps, Comment } from '@/Interfaces/blogs';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
 
-export default function BlogPost({ blog }: { blog: any }) {
-    const [comments, setComments] = useState<any[]>([]);
+export default function BlogPost({ blog }: { blog: BlogProps }) {
+    const [comments, setComments] = useState<Comment[]>([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -40,7 +41,7 @@ export default function BlogPost({ blog }: { blog: any }) {
 export const getStaticPaths: GetStaticPaths = async () => {
     const res = await fetch('http://localhost:5000/blogs');
     const blogs = await res.json();
-    const paths = blogs.map((blog: any) => ({
+    const paths = blogs.map((blog: BlogProps) => ({
         params: { slug: blog.slug },
     }));
 
